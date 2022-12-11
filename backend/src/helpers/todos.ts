@@ -12,20 +12,18 @@ const logger = createLogger('Todos business logic')
 const attachment = new AttachmentUtils();
 const todoAccess = new TodosAccess();
 
-
 // TODO: Create
 export async function createTodo(userId: string, createTodoRequest: CreateTodoRequest): Promise<TodoItem> {
     logger.info('Start todo create')
     const itemId = uuid.v4()
     const createdAt = new Date().toISOString()
-    const attachmentUrl = attachment.getAttachmentUrl(itemId)
     return await todoAccess.createTodoItem({
         todoId: itemId,
         userId: userId,
         name: createTodoRequest.name,
         dueDate: createTodoRequest.dueDate,
         createdAt: createdAt,
-        attachmentUrl: attachmentUrl,
+        attachmentUrl: null,
         done: false
     })
 }
@@ -53,5 +51,7 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
 export async function createAttachmentPresignedUrl(todoId: string, userId: string): Promise<string> {
     logger.info('Start create attachment url')
     logger.info('userId: ' + userId)
+    const url = attachment.getAttachmentUrl(todoId)
+    await todoAccess.updateAttachmentUrl(todoId, userId, url)
     return attachment.getUploadUrl(todoId)
 }
