@@ -107,11 +107,6 @@ export class TodosAccess {
             ExpressionAttributeValues: {
                 ":attachmentUrl": attachmentUrl,
             }
-        }, (err) => {
-            if (err) {
-                logger.info('Failed to update attachment url')
-                throw new Error("Failed to update attachment url")
-            }
         }).promise()
 
         return attachmentUrl
